@@ -7,13 +7,20 @@ cache:
   - node_modules
 env: NODE_ENV=test
 deploy:
-  provider: opsworks
+- provider: opsworks
   access_key_id: AKIAIT4X4NDGM2WVL6VA
   secret-access-key:
     secure: ILcjgHa8m/HA4B/O5twwoBe2Cvz2JvAfTUsFY76X7cQKQ3LMT0L1gesO9Bp2iwPLBlFK0+1OrjsCVxdbo483qTo/SCHOREoYC9S5s5iNIbPzOWQkLy2pjJlQJAHD7JUasz7WGniaWAg1YFK0ujJV2NpJ7QmZ2V6bdgwumUuiEgk=
   app-id: a3f07af5-99e9-4c17-854c-50aef9c540dd
   on:
     branch: staging
+- provider: opsworks
+  access_key_id: AKIAIT4X4NDGM2WVL6VA
+  secret-access-key:
+    secure: ILcjgHa8m/HA4B/O5twwoBe2Cvz2JvAfTUsFY76X7cQKQ3LMT0L1gesO9Bp2iwPLBlFK0+1OrjsCVxdbo483qTo/SCHOREoYC9S5s5iNIbPzOWQkLy2pjJlQJAHD7JUasz7WGniaWAg1YFK0ujJV2NpJ7QmZ2V6bdgwumUuiEgk=
+  app-id: 2a6c7f8b-0981-4ea0-a41c-def5e08f0e5e
+  on:
+    branch: master
 branches:
   only:
   - master
