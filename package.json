@@ -1,0 +1,30 @@
+{
+  "name": "octoblu-migrations",
+  "version": "0.0.1",
+  "description": "This project is used for running database migrations for octoblu",
+  "main": "migrate.js",
+  "dependencies": {
+    "mgrt": "~0.2.6",
+    "mongodb": "~1.4.8",
+    "when": "~3.4.4",
+    "async": "~0.9.0",
+    "underscore.string": "~2.3.3",
+    "node-uuid": "~1.4.1",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "mgrt up --storage mongo-storage.js",
+    "test": "echo \"Testing is for suckas\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/octoblu/octoblu-migrations.git"
+  },
+  "author": "Octoblu Inc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/octoblu/octoblu-migrations/issues"
+  },
+  "homepage": "https://github.com/octoblu/octoblu-migrations"
+}
