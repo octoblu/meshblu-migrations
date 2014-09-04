@@ -1,7 +1,7 @@
-octoblu-migrations
+meshblu-migrations
 ==================
 
-Contains migration scripts needed to run database migrations for Octoblu. 
+Contains migration scripts needed to run database migrations for Meshblu. 
 
 
 npm install -g mgrt
