@@ -1,16 +1,16 @@
 {
-  "name": "octoblu-migrations",
-  "version": "0.0.1",
-  "description": "This project is used for running database migrations for octoblu",
+  "name": "meshblu-migrations",
+  "version": "1.0.0",
+  "description": "This project is used for running database migrations for meshblu",
   "main": "migrate.js",
   "dependencies": {
+    "async": "^0.9.0",
+    "bcrypt": "^0.8.1",
+    "lodash": "^2.4.1",
     "mgrt": "~0.2.6",
-    "mongodb": "~1.4.8",
-    "when": "~3.4.4",
-    "async": "~0.9.0",
-    "underscore.string": "~2.3.3",
+    "mongodb": "^1.4.28",
     "node-uuid": "~1.4.1",
-    "lodash": "~2.4.1"
+    "when": "^3.4.6"
   },
   "devDependencies": {},
   "scripts": {
@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/octoblu/octoblu-migrations.git"
+    "url": "https://github.com/octoblu/meshblu-migrations.git"
   },
   "author": "Octoblu Inc",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/octoblu/octoblu-migrations/issues"
+    "url": "https://github.com/octoblu/meshblu-migrations/issues"
   },
-  "homepage": "https://github.com/octoblu/octoblu-migrations"
+  "homepage": "https://github.com/octoblu/meshblu-migrations"
 }
