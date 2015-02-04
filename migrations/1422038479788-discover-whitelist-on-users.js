@@ -1,9 +1,11 @@
 var async      = require('async');
 var _          = require('lodash');
-var connection = require('../connection');
+var mongodb    = require('mongodb');
+var Connection = require('../connection');
+var connection = new Connection(mongodb.MongoClient);
 
 exports.up = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     return db.collection('devices').find({type: 'user'}).each(function(error, device){
       if(error){ return; }
       if(!device){ return success(); }
@@ -16,7 +18,7 @@ exports.up = function(success, error) {
 };
 
 exports.down = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     return db.collection('devices').find({type: 'user'}).each(function(error, device){
       if(error){ return; }
       if(!device){ return success(); }

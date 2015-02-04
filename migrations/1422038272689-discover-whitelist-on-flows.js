@@ -1,10 +1,12 @@
 var async = require('async');
 var _ = require('lodash');
-var connection = require('../connection');
+var mongodb = require('mongodb');
+var Connection = require('../connection');
+var connection = new Connection(mongodb.MongoClient);
 var count = 0;
 
 exports.up = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     return db.collection('devices').find({type: 'octoblu:flow'}).each(function(error, device){
       if(error){ return; }
       if(!device){ return success(); }
@@ -17,7 +19,7 @@ exports.up = function(success, error) {
 };
 
 exports.down = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     return db.collection('devices').find({type: 'octoblu:flow'}).each(function(error, device){
       if(error){ return; }
       if(!device){ return success(); }

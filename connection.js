@@ -1,10 +1,34 @@
 var mongodb = require('mongodb');
 var when    = require('when');
 
-mongodb_uri = process.env.MGRT_MONGODB_URI || 'mongodb://127.0.0.1:27017/skynet'
+var mongodb_uri = process.env.MGRT_MESHBLUDB_URI || 'mongodb://127.0.0.1:27017/skynet';
+var octobludb_uri = process.env.MGRT_OCTOBLUDB_URI || 'mongodb://127.0.0.1:27017/meshines';
 
-module.exports = when.promise(function(resolve, reject, notify){
-  mongodb.MongoClient.connect(mongodb_uri, function(error, db){
-    resolve(db);
-  });
-});
+function Connection(mongoClient){
+  var self = this;
+  self.mongoClient = mongoClient;
+
+  self.getMeshbluConnection = function(){
+    return when.promise(function(resolve, reject, notify){
+        self.mongoClient.connect(mongodb_uri, function(error, db){
+          if(error){
+            return reject(error);
+          }
+          resolve(db);
+        });
+      }); 
+  }
+  self.getOctobluConnection = function(){
+     return when.promise(function(resolve, reject, notify){
+        self.mongoClient.connect(octobludb_uri, function(error, db){
+          if(error){
+            return reject(error);
+          }
+          resolve(db);
+        });
+      }); 
+  }
+  return self; 
+}
+
+module.exports = Connection;

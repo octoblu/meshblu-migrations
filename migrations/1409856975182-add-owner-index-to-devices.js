@@ -1,8 +1,10 @@
 var async = require('async');
-var connection = require('../connection');
+var mongodb = require('mongodb');
+var Connection = require('../connection');
+var connection = new Connection(mongodb.MongoClient);
 
 exports.up = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     async.eachSeries([{owner:1}, {socketId:1}], function(index, callback) {
       db.collection('devices').ensureIndex(index, callback);
     }, function(err){
@@ -13,7 +15,7 @@ exports.up = function(success, error) {
 };
 
 exports.down = function(success, error) {
-  connection.then(function(db){
+  connection.getMeshbluConnection().then(function(db){
     async.eachSeries(['owner_1', 'socketId_1'], function(index, callback) {
       db.collection('devices').dropIndex(index, callback);
     }, function(err){

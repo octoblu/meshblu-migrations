@@ -1,6 +1,6 @@
 {
   "name": "meshblu-migrations",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This project is used for running database migrations for meshblu",
   "main": "migrate.js",
   "dependencies": {
@@ -12,10 +12,16 @@
     "node-uuid": "~1.4.1",
     "when": "^3.4.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "chai-as-promised": "^4.1.1",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0"
+    },
   "scripts": {
     "start": "mgrt up --storage mongo-storage.js",
-    "test": "echo \"Testing is for suckas\" && exit 0"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
