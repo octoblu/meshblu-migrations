@@ -16,7 +16,7 @@ function Connection(mongoClient){
           }
           resolve(db);
         });
-      }); 
+      });
   }
   self.getOctobluConnection = function(){
      return when.promise(function(resolve, reject, notify){
@@ -26,9 +26,9 @@ function Connection(mongoClient){
           }
           resolve(db);
         });
-      }); 
+      });
   }
-  return self; 
+  return self;
 }
 
 module.exports = Connection;
