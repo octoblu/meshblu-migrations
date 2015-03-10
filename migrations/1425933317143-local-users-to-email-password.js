@@ -1,10 +1,17 @@
+var DeviceAuthenticator = require('meshblu-authenticator-core').DeviceAuthenticator;
+var meshblu = require('meshblu');
+
 var Connection = require('../connection');
 var mongodb = require('mongodb');
 var connection = new Connection(mongodb.MongoClient);
 var when = require('when');
 var _ = require('lodash');
+var request = require('request');
+var uuidGen = require('node-uuid');
+
+
 var EMAIL_AUTHENTICATOR_UUID = '069f51a0-c6a7-11e4-9e26-3728eee3006d';
-var meshblu = require('meshblu');
+var EMAIL_AUTHENTICATOR_URL = 'http://localhost:3003'
 
 exports.up = function(success, error) {
   var meshbluDBPromise = connection.getMeshbluConnection();
@@ -13,41 +20,69 @@ exports.up = function(success, error) {
   when.all([meshbluDBPromise, octobluDBPromise]).then(function(dbConnections){
     devicesCollection = dbConnections[0].collection('devices');
     usersCollection = dbConnections[1].collection('users');
+    conn = meshblu.createConnection({ uuid: EMAIL_AUTHENTICATOR_UUID, token: 'not-real-token'});
+    devicesCollection._update = devicesCollection.update;
 
-    usersCollection.find({local: {$exists: true}}).each(function(error, user) {
-      if(error || !user) {
-        return console.log('error!!', error, user);
-      }
-      updateUserDevice(user);
+    devicesCollection.update = function(query, device, callback) {
+
+      device.discoverWhitelist = [device.uuid, EMAIL_AUTHENTICATOR_UUID];
+      device.configureWhitelist= [device.uuid, EMAIL_AUTHENTICATOR_UUID];
+
+      return devicesCollection._update(query, {$set: device}, callback);
+    };
+
+    devicesCollection.findOne({uuid: EMAIL_AUTHENTICATOR_UUID}, {privateKey: true}, function(error, device){
+      conn.setPrivateKey(device.privateKey);
+      var authenticator = new DeviceAuthenticator(
+        EMAIL_AUTHENTICATOR_UUID,
+       'email-password',
+        { meshblu:  conn, meshbludb: devicesCollection}
+      );
+
+      usersCollection.find({local: {$exists: true}}).each(function(error, user) {
+        if(error || !user) {
+          return console.log('error!!', error, user);
+        }
+
+        updateUserDevice(user, authenticator);
+      });
     });
 
-    function updateUserDevice(user) {
+    function updateUserDevice(user, authenticator) {
       console.log(user.skynet.uuid)
       devicesCollection.findOne({uuid: user.skynet.uuid}, function(error, device){
          if(error || !device) {
-              return console.log('somehow, user ' + user.email + ' has no device.');
+              return console.error('somehow, user ' + user.email + ' has no device.');
           }
-          device.discoverWhitelist = device.discoverWhitelist || [];
-          device.configureWhitelist = device.configureWhitelist || [];
-
-          device.discoverWhitelist.push(EMAIL_AUTHENTICATOR_UUID)
-          device.configureWhitelist.push(EMAIL_AUTHENTICATOR_UUID)
-
-          device.discoverWhitelist = _.uniq(device.discoverWhitelist);
-          device.configureWhitelist = _.uniq(device.configureWhitelist);
+          authenticator.addAuth({ hello: uuidGen.v4() }, user.skynet.uuid, user.email, uuidGen.v4(), function(error, device){
+            console.log(arguments);
+          })
+          return;
 
           devicesCollection.update({uuid: device.uuid}, device,
           function(error, code) {
             if(error) {
-              return console.log('error!!', error);
+              return console.error('error!!', error);
             }
-            registerWithAuthenticator(device);
+            registerWithAuthenticator(user.email, device.uuid);
           });
       });
     }
 
-    function registerWithAuthenticator(device) {
-      console.log('one day, this will register the device with the authenticator!', device);
+    function registerWithAuthenticator(email, uuid) {
+      console.log(email, uuid);
+      request.put(
+        {
+          url : EMAIL_AUTHENTICATOR_URL + '/devices',
+          json: { email: email, password: uuidGen.v4(), uuid: uuid }
+        },
+        function(error, response, body) {
+          if(error || body.error) {
+            return console.error('error: ', error, body.error);
+          }
+          console.log(body);
+        }
+      );
     }
   });
 };
