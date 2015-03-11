@@ -19,6 +19,7 @@ exports.up = function(successCallback, errorCallback) {
       EMAIL_AUTHENTICATOR_UUID,
       'email-password',
       'email',
+      'local',
       usersCollection,
       devicesCollection
     );

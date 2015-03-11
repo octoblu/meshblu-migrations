@@ -3,37 +3,38 @@ uuidGen = require 'node-uuid'
 {DeviceAuthenticator} = require 'meshblu-authenticator-core'
 
 class AuthenticatorMigrator
-  constructor: (@authenticatorUuid, @authenticatorName, @userId, @usersCollection, @devicesCollection) ->
+  constructor: (@authenticatorUuid, @authenticatorName, @userId, @octobluProperty, @usersCollection, @devicesCollection) ->
+
     @devicesCollection._update = @devicesCollection.update
 
-    @devicesCollection.update = (query, device, callback) =>
-
+    @devicesCollection.update = (query, device, callback=->) =>
       device.discoverWhitelist = [ device.uuid, @authenticatorUuid ]
       device.configureWhitelist = [ device.uuid, @authenticatorUuid ]
-
       @devicesCollection._update query, { $set: device }, callback
 
 
-  getMeshbluConnection : (callback) =>
+  getMeshbluConnection : (callback=->) =>
     conn = meshblu.createConnection(
       uuid: @authenticatorUuid
       token: 'not-real-token'
     )
+
     @devicesCollection.findOne({uuid: @authenticatorUuid}, { privateKey: true }, (error, device) =>
-      return  console.log(error) if error? || !device?
+      return console.log(error) if error? || !device?
       conn.setPrivateKey device.privateKey
       callback null, conn
     )
 
-  updateUserDevice : (user, authenticator) =>
+  updateUserDevice : (user, authenticator, callback=->) =>
     @devicesCollection.findOne { uuid: user.skynet.uuid }, (error, device) =>
       return console.error('somehow, user ' + user[@userId] + ' has no device.') if error || !device
 
-      tempPassword = 'password'
+      tempPassword = uuidGen.v4()
       authenticator.addAuth { hello: tempPassword }, user.skynet.uuid, user[@userId], tempPassword, (error, device) =>
-        console.error 'Error adding auth', error if error?
+        return callback error if error?
+        callback null, device
 
-  migrate : (callback) =>
+  migrate : (callback=->) =>
     @getMeshbluConnection (error, conn) =>
       authenticator = new DeviceAuthenticator(
         @authenticatorUuid,
@@ -41,10 +42,14 @@ class AuthenticatorMigrator
         meshblu: conn
         meshbludb: @devicesCollection
       )
+      query = {}
+      query[@octobluProperty] = $exists: true
+      userCursor = @usersCollection.find query
 
-      @usersCollection.find(local: $exists: true).each (error, user) =>
-        return if error?
-        return callback() if !user?
-        @updateUserDevice user, authenticator
+      userIterator = (err, user)=>
+        return @updateUserDevice(user, authenticator, () => userCursor.nextObject(userIterator) ) if user?
+        callback()
+
+      userCursor.nextObject userIterator
 
 module.exports = AuthenticatorMigrator
