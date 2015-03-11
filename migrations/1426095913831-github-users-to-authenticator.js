@@ -5,7 +5,7 @@ var mongodb = require('mongodb');
 var connection = new Connection(mongodb.MongoClient);
 var when = require('when');
 var AuthenticatorMigrator = require('../models/authenticator-migrator');
-var EMAIL_AUTHENTICATOR_UUID = process.env.EMAIL_AUTHENTICATOR_UUID;
+var GITHUB_AUTHENTICATOR_UUID = process.env.GITHUB_AUTHENTICATOR_UUID;
 
 exports.up = function(successCallback, errorCallback) {
   var meshbluDBPromise = connection.getMeshbluConnection();
@@ -16,10 +16,10 @@ exports.up = function(successCallback, errorCallback) {
     usersCollection = dbConnections[1].collection('users');
 
     var authenticatorMigrator = new AuthenticatorMigrator(
-      EMAIL_AUTHENTICATOR_UUID,
-      'email-password',
-      'email',
-      'local',
+      GITHUB_AUTHENTICATOR_UUID,
+      'github',
+      'id',
+      'github',
       usersCollection,
       devicesCollection
     );
@@ -34,5 +34,5 @@ exports.up = function(successCallback, errorCallback) {
 };
 
 exports.down = function(success, error) {
-	error('Please populate migration');
+  error('Please populate migration');
 };

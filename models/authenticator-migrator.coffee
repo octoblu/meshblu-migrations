@@ -20,14 +20,15 @@ class AuthenticatorMigrator
     )
 
     @devicesCollection.findOne({uuid: @authenticatorUuid}, { privateKey: true }, (error, device) =>
-      return console.log(error) if error? || !device?
+      return callback error if error?
+      return callback new Error("authenticator device does not exist") unless device?
       conn.setPrivateKey device.privateKey
       callback null, conn
     )
 
   updateUserDevice : (user, authenticator, callback=->) =>
     @devicesCollection.findOne { uuid: user.skynet.uuid }, (error, device) =>
-      return console.error('somehow, user ' + user[@userId] + ' has no device.') if error || !device
+      return callback new Error('somehow, user ' + user[@userId] + ' has no device.') if error || !device
 
       tempPassword = uuidGen.v4()
       authenticator.addAuth { hello: tempPassword }, user.skynet.uuid, user[@userId], tempPassword, (error, device) =>
@@ -36,6 +37,7 @@ class AuthenticatorMigrator
 
   migrate : (callback=->) =>
     @getMeshbluConnection (error, conn) =>
+      return callback error if error?
       authenticator = new DeviceAuthenticator(
         @authenticatorUuid,
         @authenticatorName,
