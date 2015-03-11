@@ -27,6 +27,7 @@ class AuthenticatorMigrator
     )
 
   updateUserDevice : (user, authenticator, callback=->) =>
+    return callback null, null unless user.skynet?.uuid?
     @devicesCollection.findOne { uuid: user.skynet.uuid }, (error, device) =>
       return callback new Error('somehow, user ' + user[@userId] + ' has no device.') if error || !device
 
