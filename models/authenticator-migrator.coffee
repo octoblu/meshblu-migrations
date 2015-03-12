@@ -1,6 +1,7 @@
 meshblu = require 'meshblu'
 uuidGen = require 'node-uuid'
 {DeviceAuthenticator} = require 'meshblu-authenticator-core'
+pluckDeep = require 'pluck-deep'
 
 class AuthenticatorMigrator
   constructor: (@authenticatorUuid, @authenticatorName, @userId, @octobluProperty, @usersCollection, @devicesCollection) ->
@@ -29,10 +30,10 @@ class AuthenticatorMigrator
   updateUserDevice : (user, authenticator, callback=->) =>
     return callback null, null unless user.skynet?.uuid?
     @devicesCollection.findOne { uuid: user.skynet.uuid }, (error, device) =>
-      return callback new Error('somehow, user ' + user[@userId] + ' has no device.') if error || !device
+      return callback new Error('somehow, user ' + pluckDeep(user, @userId) + ' has no device.') if error || !device
 
       tempPassword = uuidGen.v4()
-      authenticator.addAuth { hello: tempPassword }, user.skynet.uuid, user[@userId], tempPassword, (error, device) =>
+      authenticator.addAuth { hello: tempPassword }, user.skynet.uuid, pluckDeep(user, @userId), tempPassword, (error, device) =>
         return callback error if error?
         callback null, device
 

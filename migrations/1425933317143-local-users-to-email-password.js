@@ -18,7 +18,7 @@ exports.up = function(successCallback, errorCallback) {
     var authenticatorMigrator = new AuthenticatorMigrator(
       EMAIL_AUTHENTICATOR_UUID,
       'email-password',
-      'email',
+      'local.email',
       'local',
       usersCollection,
       devicesCollection

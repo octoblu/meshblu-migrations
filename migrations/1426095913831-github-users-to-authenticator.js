@@ -18,7 +18,7 @@ exports.up = function(successCallback, errorCallback) {
     var authenticatorMigrator = new AuthenticatorMigrator(
       GITHUB_AUTHENTICATOR_UUID,
       'github',
-      'id',
+      'github.id',
       'github',
       usersCollection,
       devicesCollection

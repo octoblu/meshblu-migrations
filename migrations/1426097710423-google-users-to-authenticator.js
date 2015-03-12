@@ -18,7 +18,7 @@ exports.up = function(successCallback, errorCallback) {
     var authenticatorMigrator = new AuthenticatorMigrator(
       GOOGLE_AUTHENTICATOR_UUID,
       'google',
-      'id',
+      'google.id',
       'google',
       usersCollection,
       devicesCollection
