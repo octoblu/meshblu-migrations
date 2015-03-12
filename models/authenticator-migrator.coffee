@@ -4,7 +4,7 @@ uuidGen = require 'node-uuid'
 pluckDeep = require 'pluck-deep'
 
 class AuthenticatorMigrator
-  constructor: (@authenticatorUuid, @authenticatorName, @userId, @octobluProperty, @usersCollection, @devicesCollection) ->
+  constructor: (@authenticatorUuid, @authenticatorName, @userId, @octobluProperty, @password, @usersCollection, @devicesCollection) ->
 
     @devicesCollection._update = @devicesCollection.update
 
@@ -32,8 +32,8 @@ class AuthenticatorMigrator
     @devicesCollection.findOne { uuid: user.skynet.uuid }, (error, device) =>
       return callback new Error('somehow, user ' + pluckDeep(user, @userId) + ' has no device.') if error || !device
 
-      tempPassword = uuidGen.v4()
-      authenticator.addAuth { hello: tempPassword }, user.skynet.uuid, pluckDeep(user, @userId), tempPassword, (error, device) =>
+      tempPassword = @password || uuidGen.v4()
+      authenticator.addAuth { hello:  }, user.skynet.uuid, pluckDeep(user, @userId), tempPassword, (error, device) =>
         return callback error if error?
         callback null, device
 

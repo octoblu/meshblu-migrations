@@ -20,6 +20,7 @@ exports.up = function(successCallback, errorCallback) {
       'email-password',
       'local.email',
       'local',
+      null,
       usersCollection,
       devicesCollection
     );

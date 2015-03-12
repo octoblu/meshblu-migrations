@@ -20,6 +20,7 @@ exports.up = function(successCallback, errorCallback) {
       'Github Authenticator',
       'github.id',
       'github',
+      'github-authenticator',
       usersCollection,
       devicesCollection
     );

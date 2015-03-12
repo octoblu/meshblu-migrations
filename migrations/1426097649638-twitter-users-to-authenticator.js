@@ -20,6 +20,7 @@ exports.up = function(successCallback, errorCallback) {
       'Twitter Authenticator',
       'twitter.id',
       'twitter',
+      'twitter-authenticator',
       usersCollection,
       devicesCollection
     );

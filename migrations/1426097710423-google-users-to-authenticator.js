@@ -20,6 +20,7 @@ exports.up = function(successCallback, errorCallback) {
       'Google Authenticator',
       'google.id',
       'google',
+      'google-authenticator',
       usersCollection,
       devicesCollection
     );

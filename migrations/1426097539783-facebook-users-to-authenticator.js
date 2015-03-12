@@ -20,6 +20,7 @@ exports.up = function(successCallback, errorCallback) {
       'Facebook Authenticator',
       'facebook.id',
       'facebook',
+      'facebook-authenticator',
       usersCollection,
       devicesCollection
     );
