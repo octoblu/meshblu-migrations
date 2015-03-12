@@ -17,7 +17,7 @@ exports.up = function(successCallback, errorCallback) {
 
     var authenticatorMigrator = new AuthenticatorMigrator(
       FACEBOOK_AUTHENTICATOR_UUID,
-      'facebook',
+      'Facebook Authenticator',
       'facebook.id',
       'facebook',
       usersCollection,

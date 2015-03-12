@@ -17,7 +17,7 @@ exports.up = function(successCallback, errorCallback) {
 
     var authenticatorMigrator = new AuthenticatorMigrator(
       TWITTER_AUTHENTICATOR_UUID,
-      'twitter',
+      'Twitter Authenticator',
       'twitter.id',
       'twitter',
       usersCollection,
